@@ -1,0 +1,51 @@
+﻿@page "/todo"
+
+<h3>Items (@todos.Count(todo => !todo.IsDone))</h3>
+
+
+
+<div class="page-content page-container" id="page-content">
+    <div class="padding">
+        <div class="row container d-flex justify-content-center">
+            <div class="col-lg-12">
+                <div class="card px-3">
+                    <div class="card-body">
+                        <h4 class="card-title">ToDo list</h4>
+                        <div class="add-items d-flex"> <input type="text" class="form-control todo-list-input" @bind="newTodo" placeholder="What do you need to do today?"> <button class="add btn btn-primary font-weight-bold todo-list-add-btn" @onclick="AddTodo">Add</button> </div>
+                        <div class="list-wrapper">
+                            <ul class="d-flex flex-column-reverse todo-list">
+                                @foreach (var todo in todos)
+                                {
+                                    <li>
+                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox" onclick="$(this).closest('li').toggleClass('completed');"> @todo.Title <i class="input-helper"></i></label> </div> <i class="remove fa fa-times" @onclick="@(() => RemoveItem(todo.Title))"></i>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    private IList<TodoItem> todos = new List<TodoItem>();
+    private string newTodo;
+
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            todos.Add(new TodoItem { Title = newTodo });
+            newTodo = string.Empty;
+        }
+    }
+
+    private void RemoveItem(string item)
+    {
+        todos.Remove(todos.FirstOrDefault(i => i.Title == item));
+    }
+}
